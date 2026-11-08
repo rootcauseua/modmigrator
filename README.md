@@ -1,5 +1,10 @@
 # modmigrator
 
+![version](https://img.shields.io/badge/version-0.1.0-red)
+![python](https://img.shields.io/badge/python-3.10%2B-blue)
+![license](https://img.shields.io/badge/license-MIT-green)
+![tests](https://img.shields.io/badge/tests-14%20passing-brightgreen)
+
 Переносить дані модів Minecraft (waypoints, закладки, конфіги) між двома
 папками `.minecraft` — наприклад, зі старої версії гри на нову, або між
 двома інстансами (Prism Launcher, MultiMC тощо).
@@ -7,6 +12,33 @@
 Moves Minecraft mod data (waypoints, bookmarks, configs) between two
 `.minecraft` folders — e.g. when upgrading Minecraft versions, or
 between two instances (Prism Launcher, MultiMC, etc).
+
+## > demo
+
+Приклад виводу (dry-run на тестовій структурі папок) / example output
+(dry-run on a sample folder structure):
+
+```
+$ python migrator.py demo out --mods journeymap_waypoints xaeros_minimap
+
+[увага] профіль 'journeymap_waypoints' — шляхи перевірені не повністю (partly_verified), перевір знайдені файли уважно перед копіюванням.
+[увага] профіль 'xaeros_minimap' — шляхи перевірені не повністю (best_guess), перевір знайдені файли уважно перед копіюванням.
+
+=== JourneyMap — лише waypoints (мітки) (~ частково перевірений) ===
+    Тільки мітки, без тайлів карти (легко, кілька КБ). Шлях journeymap/data/sp/<світ>/waypoints підтверджений логами гри та форумом FTB; для серверів (data/mp/...) структура така сама за шаблоном, але прямо не перевірена.
+    Знайдено 3 файл(ів), 49.0 B
+      journeymap/data/mp/play_example_net/waypoints/spawn.json
+      journeymap/data/sp/MyWorld/waypoints/base.json
+      journeymap/data/sp/MyWorld/waypoints/home.json
+
+=== Xaero's Minimap (? приблизний шлях) ===
+    Шлях 'XaeroWaypoints' відомий, але точна структура config може відрізнятись між версіями мода — перевір dry-run перед копіюванням.
+    Знайдено 1 файл(ів), 3.0 B
+      XaeroWaypoints/Multiplayer_example/waypoints.txt
+
+Це був DRY-RUN. Нічого не скопійовано.
+Щоб реально скопіювати ці 4 файл(ів), додай прапорець --yes до тієї ж команди.
+```
 
 ## Статус / Status
 
@@ -122,6 +154,19 @@ Waystones не має окремого профілю, бо його дані л
 
 Патерни — відносно кореня `.minecraft`, у форматі Python `pathlib`
 glob (підтримує `**` для рекурсивного пошуку).
+
+## Тести / Tests
+
+```bash
+pip install pytest
+pytest test_migrator.py -v
+```
+
+14 тестів: пошук файлів, dry-run, копіювання зі збереженням структури,
+захист від перезапису, `--skip`, відсутність подвійного підрахунку,
+обробка помилок. / 14 tests: file discovery, dry-run, copying with
+structure preserved, overwrite protection, `--skip`, no double counting,
+error handling.
 
 ## Відомі обмеження / Known limitations
 
